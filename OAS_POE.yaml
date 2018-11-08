@@ -1,0 +1,112 @@
+openapi: 3.0.1
+info:
+  version: '0.1'
+  title: Proof of Existence
+  description: >-
+    This is a blockchain notary service, allows to store hashes of string and
+    files in blockchain leveraging Immutability. Also, it stores the files
+    uploaded on IPFS (Decentralised storage) and allows to retrieve them with
+    accepting the hash.
+servers:
+  - url: 'https://dev.apigee.ust-global.com:8442'
+paths:
+  /bcnotary/search:
+    post:
+      description: >-
+        The Search Endpoint enables the user to search by either string or the
+        hash and returns the Timestamp and Blocknumber. It has two key-value
+        pairs- Input (enter the input here) and Option (It can take two values
+        either a String or SHA256)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/search_body'
+            examples:
+              '0':
+                value: |-
+                  {   "input":"xyz",
+                      "option":"String"
+                  }
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json; charset=utf-8:
+              schema:
+                type: string
+              examples: {}
+  /bcnotary/getfile:
+    post:
+      description: >-
+        This endpoint accepts a IPFS hash of a file that has been stored to IPFS
+        using file endpoint and returns it.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/get_file_body'
+            examples:
+              '0':
+                value: '{"query":"QmWBvimA3KJNfEoMAm5Nm7RrDC5RMqEYZ16YpYETsY55MA"}'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html; charset=utf-8:
+              schema:
+                type: string
+              examples: {}
+  /bcnotary/file:
+    post:
+      description: >-
+        Allows user to upload file (as multipart data) of which hash is
+        generated and stored immutably on blockchain.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json; charset=utf-8:
+              schema:
+                type: string
+              examples: {}
+  /bcnotary/string:
+    post:
+      description: >-
+        This endpoint allows to store the hash (Genrated on fly) of the string
+        entered. Key accepted- "string" and accepts any string as value.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/string_body'
+            examples:
+              '0':
+                value: '{"string":"String to be entered"}'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json; charset=utf-8:
+              schema:
+                type: string
+              examples: {}
+components:
+  schemas:
+    get_file_body:
+      type: object
+      properties:
+        query:
+          type: string
+    string_body:
+      type: object
+      properties:
+        string:
+          type: string
+    search_body:
+      type: object
+      properties:
+        input:
+          type: string
+        option:
+          type: string
